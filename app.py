@@ -3,11 +3,7 @@ import random
 import os
 
 # 1. 頁面基本設定
-st.set_page_config(
-    page_title="問題字卡產生器",
-    page_icon="💡",
-    layout="centered"
-)
+st.set_page_config(page_title="問題字卡產生器", page_icon="💡", layout="centered")
 
 # 2. 讀取外部 CSS 檔案的函式
 def load_css(file_name):
@@ -15,18 +11,23 @@ def load_css(file_name):
         with open(file_name, "r", encoding="utf-8") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# 載入靜態樣式
+# 載入靜態樣式基礎設施 (排版、陰影、字體大小等)
 load_css("style.css")
 
-# 3. 定義團隊、對應檔案與專屬漸層背景
+# ==========================================
+# 📌 你的指令區：在這裡貼上你的 CSS 圖片網址
+# ==========================================
+GLOBAL_BG_URL = "https://images.pexels.com/photos/33828271/pexels-photo-33828271.jpeg"
+
+# 3. 定義團隊、對應檔案與「專屬字卡顏色」
 TEAM_INFO = {
-    "Team A": {"file": "team_a.txt", "bg": "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)"},
-    "Team B": {"file": "team_b.txt", "bg": "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)"},
-    "Team C": {"file": "team_c.txt", "bg": "linear-gradient(135deg, #f2994a 0%, #f2c94c 100%)"},
-    "Team D": {"file": "team_d.txt", "bg": "linear-gradient(135deg, #ed213a 0%, #93291e 100%)"}
+    "Team A": {"file": "team_a.txt", "card_bg": "#F0F8FF"},  # 冰川淺藍
+    "Team B": {"file": "team_b.txt", "card_bg": "#F5FFFA"},  # 薄荷淺綠
+    "Team C": {"file": "team_c.txt", "card_bg": "#FFFFF0"},  # 象牙淺黃
+    "Team D": {"file": "team_d.txt", "card_bg": "#FFF0F5"}   # 玫瑰淺粉
 }
 
-# 4. 讀取題庫的邏輯
+# 4. 讀取題庫邏輯
 @st.cache_data
 def load_questions(filename):
     if os.path.exists(filename):
@@ -34,19 +35,26 @@ def load_questions(filename):
             return [line.strip() for line in f.readlines() if line.strip()]
     return []
 
-# 5. 畫面頂部 UI
+# 5. UI 頂部
 st.title("💡 換位思考工作坊")
 selected_team = st.selectbox("請選擇你的團隊：", list(TEAM_INFO.keys()))
 
-# 6. 動態注入背景 (保留動態切換的功能)
-current_bg = TEAM_INFO[selected_team]["bg"]
+# 6. 動態注入 (統一背景圖 + 動態字卡顏色)
+current_card_bg = TEAM_INFO[selected_team]["card_bg"]
 st.markdown(f"""
 <style>
+    /* 全域背景圖片 */
     .stApp {{
-        background: {current_bg};
+        background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("{GLOBAL_BG_URL}");
         background-size: cover;
+        background-position: center;
         background-attachment: fixed;
-        transition: background 0.5s ease-in-out;
+    }}
+    
+    /* 動態覆蓋字卡的背景顏色 */
+    .question-card {{
+        background-color: {current_card_bg} !important;
+        transition: background-color 0.4s ease; /* 變色時的平滑轉場 */
     }}
 </style>
 """, unsafe_allow_html=True)
