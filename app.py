@@ -9,20 +9,47 @@ st.set_page_config(
     layout="centered"
 )
 
-# 你可以在這裡替換成你喜歡的圖片網址
-bg_img_url = "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1080&auto=format&fit=crop"
-
-st.markdown(f"""
+# 2. 注入 Mobile-First 的客製化 CSS
+st.markdown("""
 <style>
-    /* 替換整個 App 的背景 */
-    .stApp {{
-        /* 使用 linear-gradient 疊加一層半透明黑色遮罩，確保字卡與按鈕清晰可見 */
-        background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("{bg_img_url}");
-        background-size: cover;          /* 讓圖片填滿整個螢幕 */
-        background-position: center;     /* 圖片置中 */
-        background-repeat: no-repeat;    /* 防止圖片重複拼接 */
-        background-attachment: fixed;    /* 讓背景在滑動時固定住 (對手機端體驗很好) */
-    }}
+    /* 隱藏預設選單與 Footer */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    /* 改進標題與提示文字的大小與對比度 */
+    .stTitle {
+        font-size: 42px !important; /* 放大標題 */
+        color: white !important;      /* 改為白色，確保清晰 */
+        font-weight: 800;
+    }
+    .stMarkdown p {
+        font-size: 22px !important; /* 放大提示文字 */
+        color: #E2E8F0 !important; /* 改為淺灰色，提高對比 */
+    }
+
+    /* 增強型題目卡牌 UI 設計 - 字大、有實體感 */
+    .question-card {
+        background-color: #FFFFFF;  /* 純白背景 */
+        border-radius: 30px;        /* 更圓潤的邊角 */
+        padding: 60px 40px;         /* 增加大量內距，留白高級 */
+        margin: 30px 0px;
+        /* 更明顯的柔和陰影，營造 floating 的卡片感 */
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        text-align: center;
+        /* 文字大幅放大，主導畫面 */
+        font-size: 38px !important;  
+        font-weight: 800 !important;
+        color: #1E293B;             /* 深色字體，高對比度 */
+        line-height: 1.5;
+        word-wrap: break-word;
+        border: 1px solid #E2E8F0;  /* 淡淡的邊框 */
+    }
+    
+    /* 調整按鈕樣式使其更好按 */
+    .stButton>button {
+        font-size: 20px !important;
+        font-weight: bold;
+    }
 </style>
 """, unsafe_allow_html=True)
 
