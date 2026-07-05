@@ -71,7 +71,7 @@ def load_questions(filename):
     return []
 
 # 5. UI 元件建構
-st.title("💡 換位思考工作坊")
+st.title("💡 Lion真心話大冒險")
 
 # 下拉選單選擇團隊
 selected_team = st.selectbox("請選擇你的團隊：", list(TEAM_FILES.keys()))
