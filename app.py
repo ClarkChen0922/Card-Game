@@ -4,7 +4,7 @@ import os
 import time
 
 # 1. 頁面基本設定
-st.set_page_config(page_title="問題字卡產生器", page_icon="💡", layout="centered")
+st.set_page_config(page_title="Lion真心話大冒險", page_icon="🦁", layout="centered")
 
 # 2. 讀取外部 CSS 檔案的函式 (絕對路徑防護)
 def load_css(file_name):
@@ -33,7 +33,7 @@ def load_all_questions(filename):
 all_questions = load_all_questions("all_questions.txt")
 
 # 4. UI 頂部
-st.title("💡 換位思考工作坊")
+st.title("🦁真心話大冒險")
 
 # 5. 動態注入 (毛玻璃特效 + 版面推移)
 st.markdown(f"""
