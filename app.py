@@ -5,7 +5,7 @@ import os
 # 1. 頁面基本設定
 st.set_page_config(page_title="問題字卡產生器", page_icon="💡", layout="centered")
 
-# 2. 讀取外部 CSS 檔案的函式 (加入絕對路徑防護)
+# 2. 讀取外部 CSS 檔案的函式 (絕對路徑防護)
 def load_css(file_name):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, file_name)
@@ -19,11 +19,9 @@ load_css("style.css")
 # 全域背景圖片網址
 GLOBAL_BG_URL = "https://images.pexels.com/photos/33828271/pexels-photo-33828271.jpeg"
 
-# 3. 讀取「單一總題庫」邏輯 (移除快取，並加入絕對路徑防護)
+# 3. 讀取「單一總題庫」邏輯
 def load_all_questions(filename):
-    # 取得 app.py 當下所在的資料夾絕對路徑
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    # 將資料夾路徑與檔案名稱拼接起來
     file_path = os.path.join(current_dir, filename)
     
     if os.path.exists(file_path):
@@ -31,25 +29,51 @@ def load_all_questions(filename):
             return [line.strip() for line in f.readlines() if line.strip()]
     return []
 
-# 直接讀取完整的 42 題
 all_questions = load_all_questions("all_questions.txt")
 
 # 4. UI 頂部
 st.title("💡 換位思考工作坊")
 
-# 5. 動態注入 (統一背景圖 + 純白字卡)
-CARD_BG_COLOR = "#FFFFFF"
-
+# 5. 動態注入 (毛玻璃特效)
 st.markdown(f"""
 <style>
+    /* 稍微調降全域黑色遮罩的濃度，讓獅子更亮眼 */
     .stApp {{
-        background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("{GLOBAL_BG_URL}");
+        background-image: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url("{GLOBAL_BG_URL}");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
     }}
+    
+    /* 🦁 字卡毛玻璃特效 (半透明白 + 模糊) */
     .question-card {{
-        background-color: {CARD_BG_COLOR} !important;
+        background-color: rgba(255, 255, 255, 0.65) !important; /* 65% 透明度的白色 */
+        backdrop-filter: blur(12px) !important;                /* 背景模糊 12px */
+        -webkit-backdrop-filter: blur(12px) !important;        /* 支援 Apple 設備 */
+        border: 1px solid rgba(255, 255, 255, 0.6) !important; /* 加上淡淡的高光白邊框提升質感 */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important; /* 柔和陰影 */
+    }}
+
+    /* 🦁 覆蓋原本的紅色按鈕，改為毛玻璃特效 */
+    button[kind="primary"] {{
+        background-color: rgba(255, 255, 255, 0.65) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.6) !important;
+        color: #1E293B !important;  /* 把按鈕文字改為深色 */
+    }}
+    
+    /* 按鈕懸停 (Hover) 時的微調 */
+    button[kind="primary"]:hover {{
+        background-color: rgba(255, 255, 255, 0.85) !important;
+        border-color: #FFFFFF !important;
+        color: #000000 !important;
+    }}
+    
+    /* 確保按鈕內的字體夠粗夠清楚 */
+    button[kind="primary"] div {{
+        font-size: 22px !important;
+        font-weight: 900 !important;
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -63,7 +87,6 @@ if st.button("🎲 點我隨機抽題", type="primary", use_container_width=True
     if all_questions:
         st.session_state.current_question = random.choice(all_questions)
     else:
-        # 如果還是錯，把具體的路徑印出來，讓我們知道伺服器到底在找哪裡
         current_dir = os.path.dirname(os.path.abspath(__file__))
         error_msg = f"錯誤：無法讀取檔案。程式正在尋找的路徑為：<br>{os.path.join(current_dir, 'all_questions.txt')}"
         st.session_state.current_question = error_msg
