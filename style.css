@@ -5,16 +5,22 @@
 footer {visibility: hidden;}
 
 /* 確保標題與下拉選單的提示文字清晰 */
-.stTitle {
+/* =========================================
+   2. 標題與標籤文字 (深色背景上的白字設定)
+   ========================================= */
+h1 {
     font-size: 42px !important;
-    color: #FFFFFF !important;
-    font-weight: 800;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    color: #FFFFFF !important;         /* 強制純白色 */
+    font-weight: 800 !important;
+    /* 加深、加厚陰影，這是防止文字被背景圖片吃色的神器 */
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8) !important; 
 }
+
 label {
     color: #FFFFFF !important;
     font-size: 18px !important;
     font-weight: bold !important;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8) !important; /* 順便替下拉選單提示字加上陰影 */
 }
 
 /* 增強型題目卡牌 UI 設計 */
