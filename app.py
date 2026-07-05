@@ -45,9 +45,9 @@ st.markdown(f"""
         background-attachment: fixed;
     }}
     
-    /* 🦁 將按鈕區塊往下推避開獅子眼睛，並與下方卡片保持距離 */
+    /* 🦁 將按鈕區塊大幅往下推，避開獅子完整的臉部 */
     div.stButton {{
-        margin-top: 180px !important; 
+        margin-top: 350px !important; /* 從 180px 加大到 350px */
         margin-bottom: 20px !important; 
     }}
     
@@ -84,20 +84,16 @@ st.markdown(f"""
 if "current_question" not in st.session_state:
     st.session_state.current_question = None
 
-# ==========================================
-# 📌 關鍵調整區：按鈕先渲染，卡片再渲染
-# ==========================================
-
-# 先畫出按鈕 (此時按鈕會在畫面上方)
+# 先畫出按鈕
 draw_button_clicked = st.button("🎲 點我隨機抽題", type="primary", use_container_width=True)
 
-# 再建立卡片的佔位符 (此時佔位符會在按鈕下方)
+# 再建立卡片的佔位符
 card_placeholder = st.empty()
 
 # 7. 抽題按鈕與骰子動畫邏輯
 if draw_button_clicked:
     if all_questions:
-        # === 動畫階段 ===
+        # 動畫階段
         dice_faces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"]
         for _ in range(12):  
             face = random.choice(dice_faces)
@@ -110,7 +106,7 @@ if draw_button_clicked:
             )
             time.sleep(0.08)  
             
-        # === 結算階段 ===
+        # 結算階段
         selected_idx = random.randint(0, len(all_questions) - 1)
         q_num = selected_idx + 1
         q_text = all_questions[selected_idx]
@@ -124,7 +120,7 @@ if draw_button_clicked:
     else:
         st.session_state.current_question = "錯誤：無法讀取 all_questions.txt"
 
-# 8. 最終畫面渲染 (將結果丟進佔位符中顯示)
+# 8. 最終畫面渲染
 if st.session_state.current_question:
     card_placeholder.markdown(f'<div class="question-card">{st.session_state.current_question}</div>', unsafe_allow_html=True)
 else:
