@@ -9,36 +9,20 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. 注入 Mobile-First 的客製化 CSS
-st.markdown("""
+# 你可以在這裡替換成你喜歡的圖片網址
+bg_img_url = "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1080&auto=format&fit=crop"
+
+st.markdown(f"""
 <style>
-    /* 隱藏預設選單與 Footer，讓 App 看起來更像原生 App */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    
-    /* 題目卡片 UI 設計 */
-    .question-card {
-        background-color: #F8FAFC;  /* 柔和的淺灰藍色背景 */
-        border: 2px solid #E2E8F0;
-        border-radius: 20px;
-        padding: 40px 20px;
-        margin: 20px 0px;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        font-size: 26px;            /* 大字體，手機易讀 */
-        font-weight: 700;           /* 粗體 */
-        color: #1E293B;             /* 深色字體，高對比度 */
-        line-height: 1.6;
-        word-wrap: break-word;
-    }
-    
-    /* 提示文字 */
-    .hint-text {
-        text-align: center;
-        color: #94A3B8;
-        font-size: 18px;
-        font-weight: bold;
-    }
+    /* 替換整個 App 的背景 */
+    .stApp {{
+        /* 使用 linear-gradient 疊加一層半透明黑色遮罩，確保字卡與按鈕清晰可見 */
+        background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("{bg_img_url}");
+        background-size: cover;          /* 讓圖片填滿整個螢幕 */
+        background-position: center;     /* 圖片置中 */
+        background-repeat: no-repeat;    /* 防止圖片重複拼接 */
+        background-attachment: fixed;    /* 讓背景在滑動時固定住 (對手機端體驗很好) */
+    }}
 </style>
 """, unsafe_allow_html=True)
 
