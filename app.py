@@ -34,7 +34,7 @@ all_questions = load_all_questions("all_questions.txt")
 # 4. UI 頂部
 st.title("💡 換位思考工作坊")
 
-# 5. 動態注入 (毛玻璃特效)
+# 5. 動態注入 (毛玻璃特效 + 版面推移)
 st.markdown(f"""
 <style>
     /* 稍微調降全域黑色遮罩的濃度，讓獅子更亮眼 */
@@ -45,22 +45,27 @@ st.markdown(f"""
         background-attachment: fixed;
     }}
     
-    /* 🦁 字卡毛玻璃特效 (半透明白 + 模糊) */
+    /* 🦁 將按鈕區塊往下推，避開獅子的眼睛 (留白美學) */
+    div.stButton {{
+        margin-top: 180px !important; 
+    }}
+    
+    /* 字卡毛玻璃特效 (半透明白 + 模糊) */
     .question-card {{
-        background-color: rgba(255, 255, 255, 0.65) !important; /* 65% 透明度的白色 */
-        backdrop-filter: blur(12px) !important;                /* 背景模糊 12px */
-        -webkit-backdrop-filter: blur(12px) !important;        /* 支援 Apple 設備 */
-        border: 1px solid rgba(255, 255, 255, 0.6) !important; /* 加上淡淡的高光白邊框提升質感 */
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important; /* 柔和陰影 */
+        background-color: rgba(255, 255, 255, 0.65) !important; 
+        backdrop-filter: blur(12px) !important;                
+        -webkit-backdrop-filter: blur(12px) !important;        
+        border: 1px solid rgba(255, 255, 255, 0.6) !important; 
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important; 
     }}
 
-    /* 🦁 覆蓋原本的紅色按鈕，改為毛玻璃特效 */
+    /* 覆蓋原本的紅色按鈕，改為毛玻璃特效 */
     button[kind="primary"] {{
         background-color: rgba(255, 255, 255, 0.65) !important;
         backdrop-filter: blur(10px) !important;
         -webkit-backdrop-filter: blur(10px) !important;
         border: 1px solid rgba(255, 255, 255, 0.6) !important;
-        color: #1E293B !important;  /* 把按鈕文字改為深色 */
+        color: #1E293B !important;  
     }}
     
     /* 按鈕懸停 (Hover) 時的微調 */
