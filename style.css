@@ -1,0 +1,47 @@
+/* style.css */
+
+/* 隱藏預設選單與 Footer */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+
+/* 確保標題與下拉選單的提示文字清晰 */
+.stTitle {
+    font-size: 42px !important;
+    color: #FFFFFF !important;
+    font-weight: 800;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+}
+label {
+    color: #FFFFFF !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+}
+
+/* 增強型題目卡牌 UI 設計 */
+.question-card {
+    background-color: #FFFFFF;
+    border-radius: 30px;
+    padding: 60px 40px;
+    margin: 30px 0px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: 38px !important;  
+    font-weight: 800 !important;
+    color: #1E293B;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+/* 尚未抽題的提示文字顏色 */
+.hint-text {
+    color: #94A3B8 !important;
+    font-size: 22px !important;
+}
+
+/* 調整按鈕樣式 */
+.stButton>button {
+    font-size: 20px !important;
+    font-weight: bold;
+    border-radius: 12px;
+    padding: 10px 0px;
+}
