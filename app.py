@@ -1,7 +1,7 @@
 import streamlit as st
 import random
 import os
-import time  # 引入時間模組來製作動畫延遲
+import time
 
 # 1. 頁面基本設定
 st.set_page_config(page_title="問題字卡產生器", page_icon="💡", layout="centered")
@@ -45,8 +45,10 @@ st.markdown(f"""
         background-attachment: fixed;
     }}
     
+    /* 🦁 將按鈕區塊往下推避開獅子眼睛，並與下方卡片保持距離 */
     div.stButton {{
         margin-top: 180px !important; 
+        margin-bottom: 20px !important; 
     }}
     
     .question-card {{
@@ -82,17 +84,23 @@ st.markdown(f"""
 if "current_question" not in st.session_state:
     st.session_state.current_question = None
 
-# 建立一個佔位符 (Placeholder)，這是讓動畫和最終結果能在同一個位子無縫切換的關鍵
+# ==========================================
+# 📌 關鍵調整區：按鈕先渲染，卡片再渲染
+# ==========================================
+
+# 先畫出按鈕 (此時按鈕會在畫面上方)
+draw_button_clicked = st.button("🎲 點我隨機抽題", type="primary", use_container_width=True)
+
+# 再建立卡片的佔位符 (此時佔位符會在按鈕下方)
 card_placeholder = st.empty()
 
 # 7. 抽題按鈕與骰子動畫邏輯
-if st.button("🎲 點我隨機抽題", type="primary", use_container_width=True):
+if draw_button_clicked:
     if all_questions:
         # === 動畫階段 ===
         dice_faces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"]
-        for _ in range(12):  # 快速切換 12 個影格
+        for _ in range(12):  
             face = random.choice(dice_faces)
-            # 在佔位符中渲染動畫畫面
             card_placeholder.markdown(
                 f'<div class="question-card">'
                 f'<span style="font-size: 80px; color: #1E293B;">{face}</span><br>'
@@ -100,16 +108,13 @@ if st.button("🎲 點我隨機抽題", type="primary", use_container_width=True
                 f'</div>', 
                 unsafe_allow_html=True
             )
-            time.sleep(0.08)  # 每個影格停留 0.08 秒
+            time.sleep(0.08)  
             
         # === 結算階段 ===
-        # 取得隨機題目的索引值 (0 到 41)
         selected_idx = random.randint(0, len(all_questions) - 1)
-        # 動態生成題號 (將索引值 +1，並補零至兩位數，例如 01, 07, 42)
         q_num = selected_idx + 1
         q_text = all_questions[selected_idx]
         
-        # 將題號與題目組裝成高級的 HTML 格式
         st.session_state.current_question = (
             f'<div style="font-size: 18px; color: #475569; font-weight: 800; margin-bottom: 15px; letter-spacing: 2px;">'
             f'QUESTION {q_num:02d}'
@@ -119,7 +124,7 @@ if st.button("🎲 點我隨機抽題", type="primary", use_container_width=True
     else:
         st.session_state.current_question = "錯誤：無法讀取 all_questions.txt"
 
-# 8. 最終畫面渲染 (無論有沒有點擊按鈕，都會把最新的狀態顯示在佔位符上)
+# 8. 最終畫面渲染 (將結果丟進佔位符中顯示)
 if st.session_state.current_question:
     card_placeholder.markdown(f'<div class="question-card">{st.session_state.current_question}</div>', unsafe_allow_html=True)
 else:
