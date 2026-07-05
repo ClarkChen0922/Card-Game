@@ -3,7 +3,7 @@ import random
 import os
 
 # 1. 頁面基本設定
-st.set_page_config(page_title="問題字卡產生器", page_icon="💡", layout="centered")
+st.set_page_config(page_title="Lion真心話大冒險", page_icon="💡", layout="centered")
 
 # 2. 讀取外部 CSS 檔案的函式
 def load_css(file_name):
@@ -36,7 +36,7 @@ def load_questions(filename):
     return []
 
 # 5. UI 頂部
-st.title("💡 Lion真心話大冒險")
+st.title("💡Lion真心話大冒險")
 selected_team = st.selectbox("請選擇你的團隊：", list(TEAM_INFO.keys()))
 
 # 6. 動態注入 (統一背景圖 + 動態字卡顏色)
