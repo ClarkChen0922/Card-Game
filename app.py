@@ -36,7 +36,7 @@ def load_questions(filename):
     return []
 
 # 5. UI 頂部
-st.title("💡 換位思考工作坊")
+st.title("💡 Lion真心話大冒險")
 selected_team = st.selectbox("請選擇你的團隊：", list(TEAM_INFO.keys()))
 
 # 6. 動態注入 (統一背景圖 + 動態字卡顏色)
