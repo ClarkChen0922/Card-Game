@@ -3,8 +3,8 @@ import random
 import os
 import time
 
-# 1. 頁面基本設定
-st.set_page_config(page_title="Lion 換位思考工作坊", page_icon="💡", layout="centered")
+# 1. 頁面基本設定 (更新了網頁標籤名稱)
+st.set_page_config(page_title="Lion換位思考工作坊", page_icon="💡", layout="centered")
 
 # 全域背景圖片網址
 GLOBAL_BG_URL = "https://images.pexels.com/photos/33828271/pexels-photo-33828271.jpeg"
@@ -22,8 +22,8 @@ def load_questions(filename):
 warmup_questions = load_questions("warmup_questions.txt")
 formal_questions = load_questions("formal_questions.txt")
 
-# 3. UI 頂部與題庫選擇
-st.title("💡 Lion 換位思考工作坊")
+# 3. UI 頂部與題庫選擇 (更新了大標題)
+st.title("💡 Lion換位思考工作坊")
 
 selected_mode = st.radio(
     "請選擇當前階段：",
@@ -31,7 +31,7 @@ selected_mode = st.radio(
     horizontal=True
 )
 
-# 4. 動態注入 CSS (防彈壓縮版：嚴禁在 style 標籤內留空白行，避免 Markdown 解析錯誤)
+# 4. 動態注入 CSS (防彈壓縮版)
 st.markdown(f"""
 <style>
 #MainMenu {{visibility: hidden;}}
@@ -39,7 +39,8 @@ footer {{visibility: hidden;}}
 .stApp {{background-image: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url("{GLOBAL_BG_URL}"); background-size: cover; background-position: center; background-attachment: fixed;}}
 h1 {{font-size: 42px !important; color: #FFFFFF !important; font-weight: 900 !important; text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8) !important;}}
 div.stRadio p {{color: #FFFFFF !important; font-size: 18px !important; font-weight: bold !important; text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8) !important;}}
-div.stButton {{margin-top: 240px !important; margin-bottom: 20px !important;}}
+/* 🦁 將原本 240px 的 margin-top 改回 20px，讓按鈕乖乖貼在選項下方 */
+div.stButton {{margin-top: 20px !important; margin-bottom: 20px !important;}}
 .question-card {{background-color: rgba(255, 255, 255, 0.65) !important; backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important; border: 1px solid rgba(255, 255, 255, 0.6) !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important; border-radius: 30px !important; padding: 60px 40px !important; margin: 30px 0px !important; text-align: center !important; font-size: 38px !important; font-weight: 800 !important; color: #1E293B !important; line-height: 1.5 !important; word-wrap: break-word !important;}}
 .hint-text {{color: #475569 !important; font-size: 24px !important;}}
 button[kind="primary"] {{background-color: rgba(255, 255, 255, 0.65) !important; backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important; border: 1px solid rgba(255, 255, 255, 0.6) !important; color: #1E293B !important; border-radius: 12px !important; padding: 10px 0px !important;}}
