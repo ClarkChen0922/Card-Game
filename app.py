@@ -4,7 +4,7 @@ import os
 import time
 
 # 1. 頁面基本設定
-st.set_page_config(page_title="問題字卡產生器", page_icon="💡", layout="centered")
+st.set_page_config(page_title="Lion 換位思考工作坊", page_icon="💡", layout="centered")
 
 # 全域背景圖片網址
 GLOBAL_BG_URL = "https://images.pexels.com/photos/33828271/pexels-photo-33828271.jpeg"
@@ -23,7 +23,7 @@ warmup_questions = load_questions("warmup_questions.txt")
 formal_questions = load_questions("formal_questions.txt")
 
 # 3. UI 頂部與題庫選擇
-st.title("💡 換位思考工作坊")
+st.title("💡 Lion 換位思考工作坊")
 
 selected_mode = st.radio(
     "請選擇當前階段：",
