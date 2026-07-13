@@ -3,13 +3,13 @@ import random
 import os
 import time
 
-# 1. 頁面基本設定 (更新了網頁標籤名稱)
+# 1. 頁面基本設定
 st.set_page_config(page_title="Lion換位思考工作坊", page_icon="💡", layout="centered")
 
 # 全域背景圖片網址
 GLOBAL_BG_URL = "https://images.pexels.com/photos/33828271/pexels-photo-33828271.jpeg"
 
-# 2. 讀取題庫邏輯 (絕對路徑防護)
+# 2. 讀取題庫邏輯
 def load_questions(filename):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, filename)
@@ -18,63 +18,82 @@ def load_questions(filename):
             return [line.strip() for line in f.readlines() if line.strip()]
     return []
 
-# 載入兩份題庫
 warmup_questions = load_questions("warmup_questions.txt")
 formal_questions = load_questions("formal_questions.txt")
 
-# 3. UI 頂部與題庫選擇 (更新了大標題)
+# 3. UI 頂部與選單
 st.title("💡 Lion換位思考工作坊")
 
-selected_mode = st.radio(
-    "請選擇當前階段：",
-    ["🌞 暖身題", "🔥 正式題"],
-    horizontal=True
-)
+selected_team = st.selectbox("👥 請選擇你的組別：", ["第一組", "第二組", "第三組", "第四組"])
+selected_mode = st.radio("🎯 請選擇當前階段：", ["🌞 暖身題", "🔥 正式題"], horizontal=True)
 
-# 4. 動態注入 CSS (防彈壓縮版)
+# 4. 動態注入 CSS (加入主持人專區的防彈白底樣式)
 st.markdown(f"""
 <style>
 #MainMenu {{visibility: hidden;}}
 footer {{visibility: hidden;}}
 .stApp {{background-image: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url("{GLOBAL_BG_URL}"); background-size: cover; background-position: center; background-attachment: fixed;}}
 h1 {{font-size: 42px !important; color: #FFFFFF !important; font-weight: 900 !important; text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8) !important;}}
-div.stRadio p {{color: #FFFFFF !important; font-size: 18px !important; font-weight: bold !important; text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8) !important;}}
-/* 🦁 將原本 240px 的 margin-top 改回 20px，讓按鈕乖乖貼在選項下方 */
+label, div.stRadio p, div.stSelectbox p {{color: #FFFFFF !important; font-size: 18px !important; font-weight: bold !important; text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8) !important;}}
 div.stButton {{margin-top: 20px !important; margin-bottom: 20px !important;}}
 .question-card {{background-color: rgba(255, 255, 255, 0.65) !important; backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important; border: 1px solid rgba(255, 255, 255, 0.6) !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important; border-radius: 30px !important; padding: 60px 40px !important; margin: 30px 0px !important; text-align: center !important; font-size: 38px !important; font-weight: 800 !important; color: #1E293B !important; line-height: 1.5 !important; word-wrap: break-word !important;}}
 .hint-text {{color: #475569 !important; font-size: 24px !important;}}
 button[kind="primary"] {{background-color: rgba(255, 255, 255, 0.65) !important; backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important; border: 1px solid rgba(255, 255, 255, 0.6) !important; color: #1E293B !important; border-radius: 12px !important; padding: 10px 0px !important;}}
 button[kind="primary"]:hover {{background-color: rgba(255, 255, 255, 0.85) !important; border-color: #FFFFFF !important; color: #000000 !important;}}
 button[kind="primary"] div {{font-size: 22px !important; font-weight: 900 !important;}}
+
+/* 確保主持人專區的文字在任何情況下都清晰可見 */
+div[data-testid="stExpander"] {{
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 10px !important;
+    margin-top: 50px !important;
+}}
+div[data-testid="stExpander"] p {{
+    color: #1E293B !important;
+    text-shadow: none !important;
+    font-weight: bold !important;
+}}
 </style>
 """, unsafe_allow_html=True)
 
-# 5. 核心狀態初始化
+# 5. 單機狀態初始化
 if "current_question" not in st.session_state:
     st.session_state.current_question = None
 if "last_mode" not in st.session_state:
     st.session_state.last_mode = selected_mode
+if "last_team" not in st.session_state:
+    st.session_state.last_team = selected_team
 
-if "warmup_q1_drawn" not in st.session_state:
-    st.session_state.warmup_q1_drawn = False
-
-# ==========================================
-# 📌 抽牌池 (Pool) 系統
-# ==========================================
-if "warmup_pool" not in st.session_state:
-    pool = list(range(1, len(warmup_questions))) if warmup_questions else []
-    random.shuffle(pool)
-    st.session_state.warmup_pool = pool
-
-if "formal_pool" not in st.session_state:
-    pool = list(range(len(formal_questions))) if formal_questions else []
-    random.shuffle(pool)
-    st.session_state.formal_pool = pool
-
-# 切換題庫時清空畫面，但保留牌池進度
-if st.session_state.last_mode != selected_mode:
+# 當切換組別或題庫時，清空當前手機畫面
+if st.session_state.last_mode != selected_mode or st.session_state.last_team != selected_team:
     st.session_state.current_question = None
     st.session_state.last_mode = selected_mode
+    st.session_state.last_team = selected_team
+
+# ==========================================
+# 📌 雲端共用牌池 (Global Shared Pool)
+# ==========================================
+@st.cache_resource
+def get_shared_pools():
+    return {}
+
+shared_pools = get_shared_pools()
+
+# 為四個小組建立各自獨立的雲端牌池
+def init_pools():
+    for team in ["第一組", "第二組", "第三組", "第四組"]:
+        if team not in shared_pools:
+            w_pool = list(range(1, len(warmup_questions))) if warmup_questions else []
+            f_pool = list(range(len(formal_questions))) if formal_questions else []
+            random.shuffle(w_pool)
+            random.shuffle(f_pool)
+            shared_pools[team] = {
+                "warmup": w_pool,
+                "formal": f_pool,
+                "warmup_q1_drawn": False
+            }
+
+init_pools()
 
 # 6. 畫面佈局：先畫出按鈕，再建立卡片的佔位符
 draw_button_clicked = st.button("🎲 點我隨機抽題", type="primary", use_container_width=True)
@@ -83,6 +102,7 @@ card_placeholder = st.empty()
 # 7. 抽題按鈕與骰子動畫邏輯
 if draw_button_clicked:
     active_questions = warmup_questions if selected_mode == "🌞 暖身題" else formal_questions
+    current_team_state = shared_pools[selected_team]
     
     if active_questions:
         # 動畫階段
@@ -98,23 +118,23 @@ if draw_button_clicked:
             )
             time.sleep(0.08)  
             
-        # 結算階段 (不放回抽樣)
+        # 結算階段
         if selected_mode == "🌞 暖身題":
-            if not st.session_state.warmup_q1_drawn:
+            if not current_team_state["warmup_q1_drawn"]:
                 selected_idx = 0
-                st.session_state.warmup_q1_drawn = True
+                current_team_state["warmup_q1_drawn"] = True
             else:
-                if len(st.session_state.warmup_pool) == 0:
-                    pool = list(range(len(warmup_questions)))
+                if len(current_team_state["warmup"]) == 0:
+                    pool = list(range(1, len(warmup_questions)))
                     random.shuffle(pool)
-                    st.session_state.warmup_pool = pool
-                selected_idx = st.session_state.warmup_pool.pop()
+                    current_team_state["warmup"] = pool
+                selected_idx = current_team_state["warmup"].pop()
         else:
-            if len(st.session_state.formal_pool) == 0:
+            if len(current_team_state["formal"]) == 0:
                 pool = list(range(len(formal_questions)))
                 random.shuffle(pool)
-                st.session_state.formal_pool = pool
-            selected_idx = st.session_state.formal_pool.pop()
+                current_team_state["formal"] = pool
+            selected_idx = current_team_state["formal"].pop()
             
         q_num = selected_idx + 1
         q_text = active_questions[selected_idx]
@@ -133,3 +153,17 @@ if st.session_state.current_question:
     card_placeholder.markdown(f'<div class="question-card">{st.session_state.current_question}</div>', unsafe_allow_html=True)
 else:
     card_placeholder.markdown('<div class="question-card hint-text">👆<br>請點擊上方按鈕抽出你的專屬問題</div>', unsafe_allow_html=True)
+
+
+# ==========================================
+# 📌 9. 主持人專區 (測試與重置)
+# ==========================================
+with st.expander("⚙️ 主持人專區 (測試與重置)"):
+    st.write("活動正式開始前，若已經測試抽過卡牌，請點擊下方按鈕將所有組別的雲端進度歸零。")
+    if st.button("🔄 重置全場四組的進度", type="secondary", use_container_width=True):
+        # 清空雲端共用字典，強制下一輪重新初始化
+        shared_pools.clear()
+        # 清空當下手機畫面的題目
+        st.session_state.current_question = None
+        # 呼叫 Streamlit 重新載入畫面
+        st.rerun()
