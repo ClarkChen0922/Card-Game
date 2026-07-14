@@ -21,19 +21,19 @@ def load_questions(filename):
 warmup_questions = load_questions("warmup_questions.txt")
 formal_questions = load_questions("formal_questions.txt")
 
-# 3. UI 頂部與選單 (拿掉多餘的 Emoji，保持清爽)
+# 3. UI 頂部與選單
 st.title("Lion 換位思考工作坊")
 
 selected_team = st.selectbox("請選擇組別：", ["第一組", "第二組", "第三組", "第四組"])
 selected_mode = st.radio("請選擇階段：", ["🧊 暖身題", "🎯 正式題"], horizontal=True)
 
-# 4. 動態注入 CSS (減法設計：加深背景、簡化陰影、優化選單)
+# 4. 動態注入 CSS (統一透明度 0.85，並將主持人專區淡化為灰色)
 st.markdown(f"""
 <style>
 #MainMenu {{visibility: hidden;}}
 footer {{visibility: hidden;}}
 
-/* 🎨 調整 1：將背景遮罩濃度從 0.15 提升到 0.55，讓獅子變成沉穩的底紋 */
+/* 背景遮罩維持 0.55 的濃度 */
 .stApp {{
     background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url("{GLOBAL_BG_URL}"); 
     background-size: cover; 
@@ -51,7 +51,7 @@ h1 {{
     margin-bottom: 30px !important;
 }}
 
-/* 🎨 調整 2：控制區塊的文字設定，移除過重的陰影，改用乾淨的白字 */
+/* 控制區塊文字設定 */
 label, div.stRadio p, div.stSelectbox p {{
     color: #F8FAFC !important; 
     font-size: 16px !important; 
@@ -59,34 +59,63 @@ label, div.stRadio p, div.stSelectbox p {{
     text-shadow: none !important;
 }}
 
-/* 🎨 調整 3：優化預設的白色下拉選單，讓它邊角更圓潤、稍微透明融入背景 */
+/* ==================================================
+   🎯 四個核心色塊透明度統一設定區 (Alpha = 0.85)
+   ================================================== */
+
+/* 1. 下拉選單 */
 div[data-baseweb="select"] > div {{
-    background-color: rgba(255, 255, 255, 0.9) !important;
+    background-color: rgba(255, 255, 255, 0.85) !important; /* 統一透明度 */
     border-radius: 12px !important;
     border: none !important;
 }}
 
-/* 按鈕區塊微調 */
+/* 2. 抽題按鈕 */
+button[kind="primary"] {{
+    background-color: rgba(255, 255, 255, 0.85) !important; /* 統一透明度 */
+    backdrop-filter: blur(10px) !important; 
+    -webkit-backdrop-filter: blur(10px) !important; 
+    border: 1px solid rgba(255, 255, 255, 0.6) !important; 
+    color: #1E293B !important; 
+    border-radius: 12px !important; 
+    padding: 12px 0px !important;
+}}
+button[kind="primary"]:hover {{background-color: rgba(255, 255, 255, 1) !important; border-color: #FFFFFF !important; color: #000000 !important;}}
+button[kind="primary"] div {{font-size: 20px !important; font-weight: 900 !important;}}
+
 div.stButton {{
     margin-top: 30px !important; 
     margin-bottom: 20px !important; 
 }}
 
-/* 卡牌與按鈕的毛玻璃質感維持不變 */
-.question-card {{background-color: rgba(255, 255, 255, 0.75) !important; backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important; border: 1px solid rgba(255, 255, 255, 0.6) !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important; border-radius: 20px !important; padding: 50px 30px !important; margin: 20px 0px !important; text-align: center !important; font-size: 32px !important; font-weight: 800 !important; color: #1E293B !important; line-height: 1.5 !important; word-wrap: break-word !important;}}
+/* 3. 問題字卡 */
+.question-card {{
+    background-color: rgba(255, 255, 255, 0.85) !important; /* 統一透明度 */
+    backdrop-filter: blur(12px) !important; 
+    -webkit-backdrop-filter: blur(12px) !important; 
+    border: 1px solid rgba(255, 255, 255, 0.6) !important; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important; 
+    border-radius: 20px !important; 
+    padding: 50px 30px !important; 
+    margin: 20px 0px !important; 
+    text-align: center !important; 
+    font-size: 32px !important; 
+    font-weight: 800 !important; 
+    color: #1E293B !important; 
+    line-height: 1.5 !important; 
+    word-wrap: break-word !important;
+}}
 .hint-text {{color: #475569 !important; font-size: 20px !important;}}
-button[kind="primary"] {{background-color: rgba(255, 255, 255, 0.8) !important; backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important; border: 1px solid rgba(255, 255, 255, 0.6) !important; color: #1E293B !important; border-radius: 12px !important; padding: 12px 0px !important;}}
-button[kind="primary"]:hover {{background-color: rgba(255, 255, 255, 1) !important; border-color: #FFFFFF !important; color: #000000 !important;}}
-button[kind="primary"] div {{font-size: 20px !important; font-weight: 900 !important;}}
 
-/* 主持人專區樣式 */
+/* 4. 主持人專區 (淡化為灰色，並維持相同的 0.85 透明度) */
 div[data-testid="stExpander"] {{
-    background-color: rgba(255, 255, 255, 0.9) !important;
+    background-color: rgba(210, 214, 220, 0.85) !important; /* 淡灰色 + 統一透明度 */
     border-radius: 10px !important;
     margin-top: 50px !important;
+    border: none !important;
 }}
 div[data-testid="stExpander"] p {{
-    color: #1E293B !important;
+    color: #475569 !important; /* 讓字體顏色也稍微變淺，降低存在感 */
     text-shadow: none !important;
     font-weight: bold !important;
 }}
