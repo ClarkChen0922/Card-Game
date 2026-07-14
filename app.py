@@ -4,7 +4,7 @@ import os
 import time
 
 # 1. 頁面基本設定
-st.set_page_config(page_title="Lion換位思考工作坊", page_icon="💡", layout="centered")
+st.set_page_config(page_title=" Lion 能量補給站", page_icon="💡", layout="centered")
 
 # 全域背景圖片網址
 GLOBAL_BG_URL = "https://images.pexels.com/photos/33828271/pexels-photo-33828271.jpeg"
@@ -22,7 +22,7 @@ warmup_questions = load_questions("warmup_questions.txt")
 formal_questions = load_questions("formal_questions.txt")
 
 # 3. UI 頂部與選單
-st.title("Lion 換位思考工作坊")
+st.title(" Lion 能量補給站")
 
 selected_team = st.selectbox("請選擇組別：", ["第一組", "第二組", "第三組", "第四組"])
 selected_mode = st.radio("請選擇階段：", ["🧊 暖身題", "🎯 正式題"], horizontal=True)
