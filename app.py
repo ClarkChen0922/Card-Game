@@ -53,7 +53,6 @@ label[data-testid="stWidgetLabel"] p {{
     text-shadow: 1px 1px 4px rgba(0,0,0,0.6) !important;
 }}
 
-/* 下拉選單維持半透明白色 */
 div[data-baseweb="select"] > div {{
     background-color: rgba(255, 255, 255, 0.85) !important; 
     backdrop-filter: blur(12px) !important; 
@@ -68,9 +67,8 @@ div[data-baseweb="select"] div[data-testid="stMarkdownContainer"] p {{
     font-weight: 800 !important;
 }}
 
-/* 🚀 按鈕：改為半透明淡黃底色 */
 button[kind="primary"] {{
-    background-color: rgba(255, 248, 196, 0.85) !important; /* 半透明淡黃色 */
+    background-color: rgba(255, 248, 196, 0.85) !important; 
     backdrop-filter: blur(12px) !important; 
     -webkit-backdrop-filter: blur(12px) !important; 
     border: 1px solid rgba(255, 235, 120, 0.6) !important; 
@@ -80,11 +78,10 @@ button[kind="primary"] {{
     margin-bottom: 10px !important;
 }}
 button[kind="primary"]:hover {{
-    background-color: rgba(255, 238, 140, 0.95) !important; /* 游標滑過時變成更有活力的黃色 */
+    background-color: rgba(255, 238, 140, 0.95) !important; 
     border-color: #FDE047 !important; 
 }}
 
-/* 🚀 按鈕文字：維持極黑(900)與放大 */
 button[kind="primary"] div {{
     color: #1E293B !important;
     font-size: 22px !important; 
@@ -126,16 +123,32 @@ button[kind="primary"] div {{
     color: #1E293B;
 }}
 
+/* 🚀 隱形版主持人專區 */
 div[data-testid="stExpander"] {{
-    background-color: rgba(210, 214, 220, 0.85) !important; 
+    background-color: transparent !important; 
+    border: 1px solid rgba(255, 255, 255, 0.1) !important; /* 極淡的邊線 */
     border-radius: 10px !important;
-    margin-top: 50px !important;
-    border: none !important;
+    margin-top: 80px !important; /* 推遠一點 */
+    box-shadow: none !important;
+    transition: all 0.3s ease;
 }}
 div[data-testid="stExpander"] p {{
-    color: #475569 !important; 
+    color: rgba(255, 255, 255, 0.2) !important; /* 超淡白字，像浮水印 */
     text-shadow: none !important;
-    font-weight: bold !important;
+    font-weight: 400 !important;
+    font-size: 12px !important; /* 字體縮小 */
+}}
+div[data-testid="stExpander"] svg {{
+    color: rgba(255, 255, 255, 0.2) !important; /* 箭頭也變淡 */
+}}
+
+/* 滑鼠移過去才稍微顯示出來 */
+div[data-testid="stExpander"]:hover {{
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    background-color: rgba(0, 0, 0, 0.2) !important;
+}}
+div[data-testid="stExpander"]:hover p, div[data-testid="stExpander"]:hover svg {{
+    color: rgba(255, 255, 255, 0.8) !important;
 }}
 </style>
 """, unsafe_allow_html=True)
