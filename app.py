@@ -20,7 +20,7 @@ def load_questions(filename):
 warmup_questions = load_questions("warmup_questions.txt")
 formal_questions = load_questions("formal_questions.txt")
 
-# 3. UI 頂部與選單 (移除階段選擇，改為全自動)
+# 3. UI 頂部與選單
 st.title("獅群真心話大冒險")
 selected_team = st.selectbox("請選擇組別：", ["第一組", "第二組", "第三組", "第四組"])
 
@@ -144,7 +144,7 @@ if st.session_state.last_team != selected_team:
     st.session_state.last_team = selected_team
 
 # ==========================================
-# 📌 雲端共用牌池 (加入輪流切換邏輯)
+# 📌 雲端共用牌池與計步器系統
 # ==========================================
 @st.cache_resource
 def get_shared_pools():
@@ -155,14 +155,15 @@ shared_pools = get_shared_pools()
 def init_pools():
     for team in ["第一組", "第二組", "第三組", "第四組"]:
         if team not in shared_pools:
-            w_pool = list(range(len(warmup_questions))) if warmup_questions else []
+            # 初始化時，將第1題(index 0)排除在外，放在牌池外等著第一回合直接被叫出
+            w_pool = list(range(1, len(warmup_questions))) if len(warmup_questions) > 1 else []
             f_pool = list(range(len(formal_questions))) if formal_questions else []
             random.shuffle(w_pool)
             random.shuffle(f_pool)
             shared_pools[team] = {
                 "warmup": w_pool,
                 "formal": f_pool,
-                "next_draw": "warmup"  # 新增：紀錄下一張該抽什麼
+                "draw_count": 0  # 計步器：紀錄該組總共抽了幾次
             }
 
 init_pools()
@@ -174,10 +175,9 @@ card_placeholder = st.empty()
 # 7. 抽題按鈕與骰子動畫邏輯
 if draw_button_clicked:
     current_team_state = shared_pools[selected_team]
+    count = current_team_state["draw_count"]
     
-    # 判斷這回合該抽哪一種題庫
-    current_type = current_team_state["next_draw"]
-    
+    # 播放動畫
     card_placeholder.markdown(
         f'<div class="question-card">'
         f'<div class="dice-anim"></div><br>'
@@ -188,39 +188,61 @@ if draw_button_clicked:
     time.sleep(0.8)  
         
     try:
-        if current_type == "warmup" and warmup_questions:
+        # 📌 第 1 抽：霸王條款，絕對是暖身題第 1 題
+        if count == 0:
+            tag = "🧊 暖身題"
+            q_num = 1
+            q_text = warmup_questions[0]
+            
+        # 📌 第 2、3 抽：隨機暖身題
+        elif count == 1 or count == 2:
             if len(current_team_state["warmup"]) == 0:
-                pool = list(range(len(warmup_questions)))
+                pool = list(range(1, len(warmup_questions))) if len(warmup_questions) > 1 else []
                 random.shuffle(pool)
                 current_team_state["warmup"] = pool
             
             selected_idx = current_team_state["warmup"].pop()
-            q_text = warmup_questions[selected_idx]
             tag = "🧊 暖身題"
-            # 抽完暖身題，設定下次抽正式題
-            current_team_state["next_draw"] = "formal"
+            q_num = selected_idx + 1
+            q_text = warmup_questions[selected_idx]
             
-        elif current_type == "formal" and formal_questions:
-            if len(current_team_state["formal"]) == 0:
-                pool = list(range(len(formal_questions)))
-                random.shuffle(pool)
-                current_team_state["formal"] = pool
-            
-            selected_idx = current_team_state["formal"].pop()
-            q_text = formal_questions[selected_idx]
-            tag = "🎯 正式題"
-            # 抽完正式題，設定下次抽暖身題
-            current_team_state["next_draw"] = "warmup"
-            
-        q_num = selected_idx + 1
+        # 📌 第 4 抽之後：開始穿插循環 (偶數次抽暖身，奇數次抽正式)
+        else:
+            if count % 2 == 1:  # 第 4抽(count=3), 第 6抽(count=5)... 抽正式題
+                if len(current_team_state["formal"]) == 0:
+                    pool = list(range(len(formal_questions)))
+                    random.shuffle(pool)
+                    current_team_state["formal"] = pool
+                
+                selected_idx = current_team_state["formal"].pop()
+                tag = "🎯 正式題"
+                q_num = selected_idx + 1
+                q_text = formal_questions[selected_idx]
+                
+            else:  # 第 5抽(count=4), 第 7抽(count=6)... 抽暖身題
+                if len(current_team_state["warmup"]) == 0:
+                    pool = list(range(1, len(warmup_questions))) if len(warmup_questions) > 1 else []
+                    random.shuffle(pool)
+                    current_team_state["warmup"] = pool
+                    
+                selected_idx = current_team_state["warmup"].pop()
+                tag = "🧊 暖身題"
+                q_num = selected_idx + 1
+                q_text = warmup_questions[selected_idx]
         
+        # 抽牌完成，計步器 +1
+        current_team_state["draw_count"] += 1
+        
+        # 顯示題目
         st.session_state.current_question = (
             f'<div style="font-size: 16px; color: #64748B; font-weight: 800; margin-bottom: 15px; letter-spacing: 2px;">'
             f'{tag} - QUESTION {q_num:02d}'
             f'</div>'
             f'{q_text}'
         )
+        
     except IndexError:
+        # 防彈修復機制
         shared_pools.clear()
         st.session_state.current_question = None
         st.rerun()
