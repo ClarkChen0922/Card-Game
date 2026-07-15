@@ -53,8 +53,8 @@ label[data-testid="stWidgetLabel"] p {{
     text-shadow: 1px 1px 4px rgba(0,0,0,0.6) !important;
 }}
 
-div[data-baseweb="select"] > div,
-button[kind="primary"] {{
+/* 下拉選單維持半透明白色 */
+div[data-baseweb="select"] > div {{
     background-color: rgba(255, 255, 255, 0.85) !important; 
     backdrop-filter: blur(12px) !important; 
     -webkit-backdrop-filter: blur(12px) !important; 
@@ -68,16 +68,23 @@ div[data-baseweb="select"] div[data-testid="stMarkdownContainer"] p {{
     font-weight: 800 !important;
 }}
 
+/* 🚀 按鈕：改為半透明淡黃底色 */
 button[kind="primary"] {{
+    background-color: rgba(255, 248, 196, 0.85) !important; /* 半透明淡黃色 */
+    backdrop-filter: blur(12px) !important; 
+    -webkit-backdrop-filter: blur(12px) !important; 
+    border: 1px solid rgba(255, 235, 120, 0.6) !important; 
+    border-radius: 12px !important;
     padding: 12px 0px !important;
     margin-top: 15px !important;
     margin-bottom: 10px !important;
 }}
 button[kind="primary"]:hover {{
-    background-color: rgba(255, 255, 255, 1) !important; 
-    border-color: #FFFFFF !important; 
+    background-color: rgba(255, 238, 140, 0.95) !important; /* 游標滑過時變成更有活力的黃色 */
+    border-color: #FDE047 !important; 
 }}
-/* 🚀 按鈕文字加粗(900)、放大 */
+
+/* 🚀 按鈕文字：維持極黑(900)與放大 */
 button[kind="primary"] div {{
     color: #1E293B !important;
     font-size: 22px !important; 
